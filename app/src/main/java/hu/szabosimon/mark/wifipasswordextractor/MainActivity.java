@@ -1,6 +1,7 @@
 package hu.szabosimon.mark.wifipasswordextractor;
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,11 +32,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Display a loading indicator
-                //findViewById(R.id.loading).setVisibility(View.VISIBLE);
-                //Query data
-                tv.setText(getWifiConfig());
-                //Dismiss a loading indicator
-                //findViewById(R.id.loading).setVisibility(View.GONE);
+                findViewById(R.id.loading).setVisibility(View.VISIBLE);
+
+                //Query data asynchronously, as it might take some seconds
+                new AsyncTask<Void, Void, String>() {
+                    protected String doInBackground(Void... params) {
+                        return getWifiConfig();
+                    }
+                    protected void onPostExecute(String wifiConfig) {
+                        tv.setText(wifiConfig);
+                        //Dismiss a loading indicator
+                        findViewById(R.id.loading).setVisibility(View.GONE);
+                    }
+                }.execute();
             }
         });
     }

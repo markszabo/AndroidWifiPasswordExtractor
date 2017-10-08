@@ -4,5 +4,5 @@
     <string name="getWifiPwdBtnText">Get Wifi passwords</string>
     <string name="failedMsg">Execution failed. Make sure your phone is rooted and the app has root permissions. \n\n If they are correct, open an issue on https://github.com/markszabo/AndroidWifiPasswordExtractor. Please include your phone model, android version, root management software (magisk, supersu) and the following details:\n\n</string>
     <string name="details">Details</string>
-    <string name="ssidPwdHeader">SSID - Password</string>
+    <string name="ssidPwdHeader">SSID - Password\n\n</string>
 </resources>
