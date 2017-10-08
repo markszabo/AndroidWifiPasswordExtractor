@@ -1,10 +1,12 @@
 package hu.szabosimon.mark.wifipasswordextractor;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -12,6 +14,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,7 +30,12 @@ public class MainActivity extends AppCompatActivity {
         getWifiPwdbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Display a loading indicator
+                //findViewById(R.id.loading).setVisibility(View.VISIBLE);
+                //Query data
                 tv.setText(getWifiConfig());
+                //Dismiss a loading indicator
+                //findViewById(R.id.loading).setVisibility(View.GONE);
             }
         });
     }
@@ -50,10 +58,23 @@ public class MainActivity extends AppCompatActivity {
             reader.close();
             // Waits for the command to finish.
             process.waitFor();
-            if(output.toString().length() == 0)
+            if(output.toString().length() == 0) {
                 return getString(R.string.failedMsg) + "The command executed successfully, however no data was returned.";
-            else
-                return output.toString();
+            } else {
+                if(((Switch)findViewById(R.id.detailsSwitch)).isChecked()) {
+                    return output.toString();
+                } else {
+                    String pattern = "ssid=\"([^\\n]*)\"\\s*psk=\"([^\\n]*)\"";
+                    Pattern media = Pattern.compile(pattern);
+                    java.util.regex.Matcher m = media.matcher(output.toString());
+                    String shortOutput = getString(R.string.ssidPwdHeader);
+                    while(m.find()) {
+                        shortOutput += m.group(1) + " - " + m.group(2) + "\n";
+                    }
+                    return shortOutput;
+                }
+
+            }
         } catch (IOException e) {
             return getString(R.string.failedMsg) + e.getStackTrace().toString();
         } catch (InterruptedException e) {
