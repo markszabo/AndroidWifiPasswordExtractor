@@ -2,6 +2,9 @@ package hu.szabosimon.mark.wifipasswordextractor;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -13,17 +16,23 @@ import java.io.InputStreamReader;
 public class MainActivity extends AppCompatActivity {
 
     TextView tv;
+    Button getWifiPwdbutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv=(TextView)findViewById(R.id.outputTV);
-        tv.setText("Output :"+"\n"+runAsRoot());
+        getWifiPwdbutton=(Button) findViewById(R.id.getWifiPwdbutton);
+        getWifiPwdbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tv.setText(getWifiConfig());
+            }
+        });
     }
 
-    public String runAsRoot() {
-
+    public String getWifiConfig() {
         try {
             // Executes the command.
             Process process = Runtime.getRuntime().exec("su -c cat /data/misc/wifi/wpa_supplicant.conf");
@@ -39,15 +48,16 @@ public class MainActivity extends AppCompatActivity {
                 output.append(buffer, 0, read);
             }
             reader.close();
-
             // Waits for the command to finish.
             process.waitFor();
-
-            return output.toString();
+            if(output.toString().length() == 0)
+                return getString(R.string.failedMsg) + "The command executed successfully, however no data was returned.";
+            else
+                return output.toString();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return getString(R.string.failedMsg) + e.getStackTrace().toString();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            return getString(R.string.failedMsg) + e.getStackTrace().toString();
         }
     }
 }

@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Wifi Password Extractor</string>
+    <string name="helptext">Press the button above and confirm when the system ask for giving root access to this app.</string>
+    <string name="getWifiPwdBtnText">Get Wifi passwords</string>
+    <string name="failedMsg">Execution failed. Make sure your phone is rooted and the app has root permissions. \n\n If they are correct, open an issue on https://github.com/markszabo/AndroidWifiPasswordExtractor. Please include your phone model, android version, root management software (magisk, supersu) and the following details:\n\n</string>
 </resources>
